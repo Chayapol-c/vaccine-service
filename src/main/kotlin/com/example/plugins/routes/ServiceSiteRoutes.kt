@@ -4,14 +4,14 @@ import com.example.models.ServiceSite
 import com.example.models.serviceSiteStorage
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.serviceSiteRouting() {
-
-    route("/site") {
-        get("s"){
+    route("/sites") {
+        get{
             if (serviceSiteStorage.isNotEmpty()) {
                 call.respond(serviceSiteStorage)
             } else {
@@ -19,7 +19,8 @@ fun Route.serviceSiteRouting() {
             }
 
         }
-
+    }
+    route("/site") {
         get( "/{id?}" ) {
             val id = call.parameters["id"] ?: return@get call.respondText("Missing Id", status = HttpStatusCode.BadRequest)
             val serviceSite = serviceSiteStorage.find { it.id == id } ?: return@get call.respondText("No service site with id $id", status = HttpStatusCode.NotFound)
